@@ -1,0 +1,32 @@
+{
+  "en": {
+    "welcome": "Welcome to Calculator!",
+    "selectLanguage": "Select a language, English or French. (en/fr)",
+    "invalidLang": "That's not a valid language. Pick English or French. (en/fr)",
+    "firstNumber": "What's the first number?",
+    "secondNumber": "What's the second number?",
+    "notValidNumber": "Hmm... that doesn't look like a valid number.",
+    "operation": "What operation would you like to perform? 1) Add 2) Susbstract 3) Multiply 4) Divide",
+    "operationNumber": "Must choose 1, 2, 3 or 4.",
+    "divisionByZero": "You're not allowed to divide by 0 !!!",
+    "result": "The result is ",
+    "anotherCalculation": "Would you like to perform another operation? (y/n)",
+    "anotherCalculationError": "Error. Would you like to perform another operation? (y/n)",
+    "bye": "Goodbye!"
+  },
+  "fr": {
+    "welcome": "Bievenue dans la calculatrice!",
+    "selectLanguage": "Sélectionner une langue, anglais ou français. (en/fr)",
+    "invalidLang": "Ce n'est pas une langue valide. Choisissez Anglais ou Français. (en/fr)",
+    "firstNumber": "Quel est le premier nombre?",
+    "secondNumber": "Quel est le deuxième nombre?",
+    "notValidNumber": "Hmm... cela ne semble pas être un nombre valide.",
+    "operation": "Quelle opération voulez-vous effectuer? 1) Ajouter 2) Soustraire 3) Multiplier 4) Diviser",
+    "operationNumber": "Vous devez choisir 1, 2, 3 ou 4.",
+    "divisionByZero": "Vous ne pouvez pas diviser par 0 !!!",
+    "result": "Le résultat est ",
+    "anotherCalculation": "Voulez-vous effectuer une autre opération? (o/n)",
+    "anotherCalculationError": "Erreur. Voulez-vous effectuer une autre opération? (o/n)",
+    "bye": "Au revoir!"
+    }
+}
