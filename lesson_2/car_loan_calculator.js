@@ -1,3 +1,5 @@
+//quick draft
+
 let readline = require('readline-sync');
 
 console.log('Enter the loan amount in $: ');
@@ -18,3 +20,5 @@ let monthlyPayment = loanAmount *
                   (1 - Math.pow(1 + monthlyInterestRate, -loanDurationMonths)));
 
 console.log(`The monthly interest payment is: ${monthlyPayment.toFixed(2)}`);
+
+console.log("     ");
