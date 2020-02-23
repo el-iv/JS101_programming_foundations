@@ -1,0 +1,13 @@
+{
+  "welcome": "Welcome to  Car Loan Calculator!",
+  "askForLoanAmount": "What is the loan amount in dollars?",
+  "invalidLoanAmount": "The loan amount is invalid. It must be a strictly positive number.",
+  "askForAnnualInterestRate": "What is the annual interest rate? For example, enter 0.04 for 4%, 0.25 for 25%.",
+  "invalidRate": "The annual interest rate is invalid. It must be a positive number.",
+  "askForLoanDuration": "What is the loan duration in months?",
+  "invalidDuration": "The loan duration is invalid, it must be a strictly positive integer.",
+  "monthlyPayment": "The monthly payment is $",
+  "anotherCalculation": "Would you like to perform another operation? (y/n)",
+  "anotherCalculationError": "Error. Would you like to perform another operation? (y/n)",
+  "bye": "Goodbye!"
+}
