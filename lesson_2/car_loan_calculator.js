@@ -9,6 +9,45 @@ function messages(message) {
   return MESSAGES[message];
 }
 
+function getLoanAmount() {
+  prompt(messages('askForLoanAmount'));
+  let loanAmount = readline.question();
+
+  while (isInvalidAmount(loanAmount)) {
+    prompt(messages('invalidLoanAmount'));
+
+    prompt(messages('askForLoanAmount'));
+    loanAmount = readline.question();
+  }
+  return loanAmount;
+}
+
+function getAnnualInterestRate() {
+  prompt(messages('askForAnnualInterestRate'));
+  let annualInterestRate = readline.question();
+
+  while (isInvalidInterestRate(annualInterestRate)) {
+    prompt(messages('invalidRate'));
+
+    prompt(messages('askForAnnualInterestRate'));
+    annualInterestRate = readline.question();
+  }
+  return annualInterestRate;
+}
+
+function getLoanDurationInMonths() {
+  prompt(messages('askForLoanDuration'));
+  let loanDurationMonths = readline.question();
+
+  while (isInvalidDuration(loanDurationMonths)) {
+    prompt(messages('invalidDuration'));
+
+    prompt(messages('askForLoanDuration'));
+    loanDurationMonths = readline.question();
+  }
+  return loanDurationMonths;
+}
+
 function isInvalidAmount(amount) {
   return (Number.isNaN(Number(amount)) || (Number(amount) <= 0));
 }
@@ -40,54 +79,36 @@ function isNewCalculation(answer) {
   return ['y', 'yes'].includes(answer.toLowerCase());
 }
 
-prompt(messages('welcome'));
-
-while (true) {
-  prompt(messages('askForLoanAmount'));
-  let loanAmount = readline.question();
-
-  while (isInvalidAmount(loanAmount)) {
-    prompt(messages('invalidLoanAmount'));
-    prompt(messages('askForLoanAmount'));
-    loanAmount = readline.question();
-  }
-
-  prompt(messages('askForAnnualInterestRate'));
-  let annualInterestRate = readline.question();
-
-  while (isInvalidInterestRate(annualInterestRate)) {
-    prompt(messages('invalidRate'));
-    prompt(messages('askForAnnualInterestRate'));
-    annualInterestRate = readline.question();
-  }
-
-  prompt(messages('askForLoanDuration'));
-  let loanDurationMonths = readline.question();
-
-  while (isInvalidDuration(loanDurationMonths)) {
-    prompt(messages('invalidDuration'));
-    prompt(messages('askForLoanDuration'));
-    loanDurationMonths = readline.question();
-  }
-
-  loanAmount = Number(loanAmount);
-  let monthlyInterestRate = Number(annualInterestRate) / 12;
-  loanDurationMonths = Number(loanDurationMonths);
-
-  let monthlyPayment = calculateMonthlyPayment(loanAmount, monthlyInterestRate,
-                                                        loanDurationMonths);
-
-  prompt(messages('monthlyPayment') + monthlyPayment.toFixed(2));
-
+function anotherCalculation() {
   prompt(messages('anotherCalculation'));
   let answer = readline.question();
 
   while (!isValidAnswer(answer)) {
     prompt(messages('anotherCalculationError'));
     answer = readline.question();
-  }
+ }
+  return isNewCalculation(answer);
+}
 
-  if (!isNewCalculation(answer)) {
+prompt(messages('welcome'));
+
+while (true) {
+  let loanAmount = getLoanAmount();
+  loanAmount = Number(loanAmount);
+
+  let annualInterestRate = getAnnualInterestRate();
+
+  let loanDurationMonths = getLoanDurationInMonths();
+  loanDurationMonths = Number(loanDurationMonths);
+
+  let monthlyInterestRate = Number(annualInterestRate) / 12;
+
+  let monthlyPayment = calculateMonthlyPayment(loanAmount, monthlyInterestRate,
+                                                        loanDurationMonths);
+
+  prompt(messages('monthlyPayment') + monthlyPayment.toFixed(2));
+
+  if (!anotherCalculation()) {
     prompt(messages('bye'));
     break;
   }
