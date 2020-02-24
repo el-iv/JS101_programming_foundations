@@ -23,6 +23,7 @@ function getLoanAmount() {
 }
 
 function getAnnualInterestRate() {
+  console.log('\n');
   prompt(messages('askForAnnualInterestRate'));
   let annualInterestRate = readline.question();
 
@@ -36,6 +37,7 @@ function getAnnualInterestRate() {
 }
 
 function getLoanDurationInMonths() {
+  console.log('\n');
   prompt(messages('askForLoanDuration'));
   let loanDurationMonths = readline.question();
 
@@ -69,6 +71,15 @@ function calculateMonthlyPayment(loanAmount, monthlyRate, durationMonths) {
 
   return loanAmount *
         (monthlyRate / (1 - Math.pow((1 + monthlyRate), (-durationMonths))));
+}
+
+function displayResults(loanAmount, annualInterestRate, loanDurationMonths,
+                        monthlyPayment) {
+  console.log('\n');
+  prompt(`Loan amount: $${loanAmount}`);
+  prompt(`Annual interest rate: ${annualInterestRate * 100}%`);
+  prompt(`Loan duration: ${loanDurationMonths} months`);
+  prompt(messages('monthlyPayment') + monthlyPayment.toFixed(2));
 }
 
 function isValidAnswer(answer) {
@@ -106,7 +117,8 @@ while (true) {
   let monthlyPayment = calculateMonthlyPayment(loanAmount, monthlyInterestRate,
                                                         loanDurationMonths);
 
-  prompt(messages('monthlyPayment') + monthlyPayment.toFixed(2));
+  displayResults(loanAmount, annualInterestRate, loanDurationMonths,
+                monthlyPayment);
 
   if (!anotherCalculation()) {
     prompt(messages('bye'));
