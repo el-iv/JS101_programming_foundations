@@ -1,0 +1,12 @@
+{
+  "welcome": "Welcome to Rock Paper Scissors!",
+  "roundNumber": "THIS IS ROUND NUMBER ",
+  "chooseFromOptions": "Choose from the following options: ",
+  "playerWinsRound": "You win the round.",
+  "computerWinsRound": "Computer wins this round.",
+  "noWinnerRound": "It's a tie! Nobody gets any point this round.",
+  "invalidChoice": "That's not a valid choice.",
+  "anotherGame": "Do you want to play again? (y/n)",
+  "anotherGameError": "Error. Would you like to play again ? (y/n)",
+  "bye": "Goodbye"
+}
