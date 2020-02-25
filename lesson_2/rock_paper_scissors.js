@@ -8,8 +8,8 @@ const WINNING_COMBOS = {
   paper:    ['rock',     'spock'],
   scissors: ['paper',    'lizard'],
   lizard:   ['paper',    'spock'],
-  spock:    ['rock',     'scissors'],
-}
+  spock:    ['rock',     'scissors']
+};
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -42,8 +42,7 @@ function playerWins(choice, computerChoice) {
 function displayRoundWinner(winner) {
   if (winner === 'Player') {
     prompt(messages('playerWinsRound'));
-  }
-  else if (winner === 'computerWinsRound') {
+  } else if (winner === 'computerWinsRound') {
     prompt(messages('computerWins'));
   } else {
     prompt(messages('noWinnerRound'));
@@ -60,17 +59,17 @@ function outputWinner(choice, computerChoice) {
   }
 }
 
-
 function updateScore(score, winner) {
   if (winner === 'Player') {
     score['Player'] += 1;
-  } else if (winner === 'Computer'){
+  } else if (winner === 'Computer') {
     score['Computer'] += 1;
   }
 }
 
 function displayCurrentScore(score) {
-  prompt("Current score Player: "  + score['Player'] + " pts   Computer: " +
+  prompt('CURRENT SCORE');
+  prompt("Player: "  + score['Player'] + " pts   Computer: " +
           score['Computer'] + " pts");
 }
 
@@ -78,18 +77,23 @@ function isMatchOver(score) {
   return (score['Player'] === 5 ||  score['Computer'] === 5);
 }
 
-function bigWinner(score) {
-  if (score['Player'] > score['Computer']) {
-    return 'Player';
+function outputBigWinner(score) {
+  let winner = '';
+  let players = Object.keys(score);
+
+  if (score[players[0]] < score[players[1]]) {
+    winner = players[0];
   } else {
-    return 'Computer';
+    winner = players[1];
   }
+  return winner;
 }
 
 function displayFinalScore(score) {
-  prompt('Final results:');
-  displayCurrentScore(score);
-  prompt(`The big winner is: ${bigWinner(score)}`);
+  prompt('FINAL SCORE');
+  prompt("Player: "  + score['Player'] + " pts   Computer: " +
+          score['Computer'] + " pts");
+  prompt(`The big winner is: ${outputBigWinner(score)}`);
 }
 
 function isValidAnswer(answer) {
@@ -112,7 +116,7 @@ while (true) {
   let score = {
       Player: 0,
       Computer: 0
-  }
+  };
 
   let roundsNumber = 1;
 
@@ -131,7 +135,9 @@ while (true) {
     roundsNumber += 1;
     console.log('\n');
   }
-  console.log(score);
+
+  displayFinalScore(score);
+  console.log('\n');
 
   if (!anotherGame()) {
     prompt(messages('bye'));
