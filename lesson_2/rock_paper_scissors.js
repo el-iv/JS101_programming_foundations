@@ -1,8 +1,15 @@
 const readline = require('readline-sync');
 const MESSAGES = require('./rock_paper_scissors_messages.json');
 const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
-
-
+/* eslint-disable id-length */
+const SHORTENED_VALID_CHOICES = {
+  r: 'rock',
+  p: 'paper',
+  s: 'scissors',
+  l: 'lizard',
+  sp: 'spock'
+};
+/* eslint-disable id-length */
 const WINNING_COMBOS = {
   rock:     ['scissors', 'lizard'],
   paper:    ['rock',     'spock'],
@@ -10,6 +17,7 @@ const WINNING_COMBOS = {
   lizard:   ['paper',    'spock'],
   spock:    ['rock',     'scissors']
 };
+
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -19,20 +27,30 @@ function messages(message) {
   return MESSAGES[message];
 }
 
+function displayRules() {
+  Object.entries(SHORTENED_VALID_CHOICES).forEach(([key, value]) => {
+    console.log(`Type ${key} for ${value}`);
+  });
+}
+
 function getPlayerOption() {
   prompt(messages('chooseFromOptions') + VALID_CHOICES.join(', '));
   let choice = readline.question();
 
-  while (!VALID_CHOICES.includes(choice)) {
+  while (!Object.keys(SHORTENED_VALID_CHOICES).includes(choice)) {
     prompt(messages("invalidChoice"));
     choice = readline.question();
   }
-  return choice;
+  return SHORTENED_VALID_CHOICES[choice];
 }
 
 function getComputerOption() {
     let randomIndex = Math.ceil(Math.random() * VALID_CHOICES.length) - 1;
     return VALID_CHOICES[randomIndex];
+}
+
+function displayChoices(playerChoice, computerChoice) {
+  prompt(`Player chose ${playerChoice},  Computer chose ${computerChoice}`);
 }
 
 function playerWins(choice, computerChoice) {
@@ -42,8 +60,8 @@ function playerWins(choice, computerChoice) {
 function displayRoundWinner(winner) {
   if (winner === 'Player') {
     prompt(messages('playerWinsRound'));
-  } else if (winner === 'computerWinsRound') {
-    prompt(messages('computerWins'));
+  } else if (winner === 'Computer') {
+    prompt(messages('computerWinsRound'));
   } else {
     prompt(messages('noWinnerRound'));
   }
@@ -68,8 +86,7 @@ function updateScore(score, winner) {
 }
 
 function displayCurrentScore(score) {
-  prompt('CURRENT SCORE');
-  prompt("Player: "  + score['Player'] + " pts   Computer: " +
+  prompt("CURRENT SCORE     Player: "  + score['Player'] + " pts   Computer: " +
           score['Computer'] + " pts");
 }
 
@@ -82,16 +99,15 @@ function outputBigWinner(score) {
   let players = Object.keys(score);
 
   if (score[players[0]] < score[players[1]]) {
-    winner = players[0];
-  } else {
     winner = players[1];
+  } else {
+    winner = players[0];
   }
   return winner;
 }
 
 function displayFinalScore(score) {
-  prompt('FINAL SCORE');
-  prompt("Player: "  + score['Player'] + " pts   Computer: " +
+  prompt("FINAL SCORE     Player: "  + score['Player'] + " pts   Computer: " +
           score['Computer'] + " pts");
   prompt(`The big winner is: ${outputBigWinner(score)}`);
 }
@@ -111,7 +127,9 @@ function anotherGame() {
   return ['y', 'yes'].includes(answer.toLowerCase());
 }
 
-
+prompt(messages('welcome'));
+displayRules();
+console.log('\n');
 while (true) {
   let score = {
       Player: 0,
@@ -122,14 +140,15 @@ while (true) {
 
   while (!isMatchOver(score)) {
     prompt(messages("roundNumber") + roundsNumber);
-    let choice = getPlayerOption();
+    let playerChoice = getPlayerOption();
     let computerChoice = getComputerOption();
 
-    let roundWinner = outputWinner(choice, computerChoice);
+    let roundWinner = outputWinner(playerChoice, computerChoice);
+
+    displayChoices(playerChoice, computerChoice);
     displayRoundWinner(roundWinner);
 
     updateScore(score, roundWinner);
-
     displayCurrentScore(score);
 
     roundsNumber += 1;
