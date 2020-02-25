@@ -130,6 +130,7 @@ function anotherGame() {
 prompt(messages('welcome'));
 displayRules();
 console.log('\n');
+
 while (true) {
   let score = {
       Player: 0,
