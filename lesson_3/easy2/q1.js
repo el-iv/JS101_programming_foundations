@@ -13,3 +13,23 @@ console.log(advice.replace('important', 'urgent'));
   and the replacement can be a string or a function to be called for each match.
   If pattern is a string, only the first occurrence will be replaced.
 */
+
+/*
+  The code above only replaces the first occurrence if the string contains two
+  or more occurences.
+
+  The function rouputAllOccurencesReplacedStr() below replaces all the occurences.
+*/
+
+let str = "banana apple banana apple banana apple.";
+
+function ouputAllOccurencesReplacedStr(str, word, newWord) {
+  let newStr = str;
+  while(newStr.includes(word)) {
+    newStr = newStr.replace(word, newWord);
+    console.log(str.includes(word));
+  }
+  return newStr;
+}
+
+console.log(rouputAllOccurencesReplacedStr(str, 'apple', 'cherry'));
