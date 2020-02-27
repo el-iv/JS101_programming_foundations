@@ -18,7 +18,6 @@ const WINNING_COMBOS = {
   spock:    ['rock',     'scissors']
 };
 
-
 function prompt(message) {
   console.log(`=> ${message}`);
 }
@@ -33,7 +32,14 @@ function displayRules() {
   });
 }
 
-function getPlayerOption() {
+function setupScore() {
+  let score = {};
+  score['Player'] = 0;
+  score['Computer'] = 0;
+  return score;
+}
+
+function getPlayerChoice() {
   prompt(messages('chooseFromOptions') + VALID_CHOICES.join(', '));
   let choice = readline.question();
 
@@ -44,12 +50,12 @@ function getPlayerOption() {
   return SHORTENED_VALID_CHOICES[choice];
 }
 
-function getComputerOption() {
+function getComputerChoice() {
     let randomIndex = Math.ceil(Math.random() * VALID_CHOICES.length) - 1;
     return VALID_CHOICES[randomIndex];
 }
 
-function displayChoices(playerChoice, computerChoice) {
+function displayPlayersChoices(playerChoice, computerChoice) {
   prompt(`Player chose ${playerChoice},  Computer chose ${computerChoice}`);
 }
 
@@ -132,21 +138,17 @@ displayRules();
 console.log('\n');
 
 while (true) {
-  let score = {
-      Player: 0,
-      Computer: 0
-  };
-
+  let score = setupScore();
   let roundsNumber = 1;
 
   while (!isMatchOver(score)) {
     prompt(messages("roundNumber") + roundsNumber);
-    let playerChoice = getPlayerOption();
-    let computerChoice = getComputerOption();
+    let playerChoice = getPlayerChoice();
+    let computerChoice = getComputerChoice();
 
     let roundWinner = outputWinner(playerChoice, computerChoice);
 
-    displayChoices(playerChoice, computerChoice);
+    displayPlayersChoices(playerChoice, computerChoice);
     displayRoundWinner(roundWinner);
 
     updateScore(score, roundWinner);
