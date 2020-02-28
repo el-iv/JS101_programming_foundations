@@ -4,7 +4,7 @@ let str1 = "Few things in life are as important as house training your pet dinos
 let str2 = "Fred and Wilma have a pet dinosaur named Dino.";
 
 /*
-  The includes() method of String determines wheter one string may be found
+  The includes() method of String determines whether one string may be found
   within another sting, return true or false.
 */
 

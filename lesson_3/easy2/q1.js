@@ -18,7 +18,7 @@ console.log(advice.replace('important', 'urgent'));
   The code above only replaces the first occurrence if the string contains two
   or more occurences.
 
-  The function rouputAllOccurencesReplacedStr() below replaces all the occurences.
+  The function ouputAllOccurencesReplacedStr() below replaces all the occurences.
 */
 
 let str = "banana apple banana apple banana apple.";
