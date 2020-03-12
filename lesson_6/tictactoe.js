@@ -36,12 +36,17 @@ function initializeBoard() {
   return board;
 }
 
-function joinOr(arr, delimeter = ', ', lastDelimeter = ' or ') {
-  if (arr.length === 2) {
-    return arr.join(lastDelimeter);
-  } else {
-    return arr.slice(0, arr.length - 1).join(delimeter) +
-            lastDelimeter + arr[arr.length - 1];
+function joinOr(arr, delimeter = ', ', word = ' or ') {
+  switch (arr.length) {
+    case 0:
+      return '';
+    case 1:
+      return arr;
+    case 2:
+      return arr.join(lastDelimeter);
+    default:
+      return arr.slice(0, arr.length - 1).join(delimeter) +
+              word + arr[arr.length - 1];
   }
 }
 
