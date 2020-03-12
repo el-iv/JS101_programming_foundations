@@ -66,16 +66,54 @@ function boardFull(board) {
 }
 
 function someoneWon(board) {
-  return false;
+  return !!detectWinner(board);
+}
+
+function detectWinner(board) {
+  let winningLines = [
+    [1, 2, 3], [4, 5, 6], [7, 8, 9],
+    [1, 4, 7], [2, 5, 8], [3, 6, 9],
+    [1, 5, 9], [3, 5, 7]
+  ];
+
+  for (let line = 0; line < winningLines.length; line++) {
+    let [sq1, sq2, sq3] = winningLines[line];
+
+    if (
+        board[sq1] === HUMAN_MARKER &&
+        board[sq2] === HUMAN_MARKER &&
+        board[sq3] === HUMAN_MARKER
+    ) {
+      return 'Player';
+    } else if (
+        board[sq1] === COMPUTER_MARKER &&
+        board[sq2] === COMPUTER_MARKER &&
+        board[sq3] === COMPUTER_MARKER
+    ) {
+      return 'Computer';
+    }
+  }
+
+  return null;
 }
 
 let board = initializeBoard();
-displayBoard(board);
 
 while (true) {
-  playerChoosesSquare(board);
-  computerChoosesSquare(board);
   displayBoard(board);
 
+  playerChoosesSquare(board);
   if (someoneWon(board) || boardFull(board)) break;
+
+  computerChoosesSquare(board);
+  if (someoneWon(board) || boardFull(board)) break;
+
+}
+
+displayBoard(board);
+
+if (someoneWon(board)) {
+  prompt(`${detectWinner(board)} won!`);
+} else {
+  prompt("It's a tie!");
 }
