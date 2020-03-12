@@ -36,11 +36,20 @@ function initializeBoard() {
   return board;
 }
 
+function joinOr(arr, delimeter = ', ', lastDelimeter = ' or ') {
+  if (arr.length === 2) {
+    return arr.join(lastDelimeter);
+  } else {
+    return arr.slice(0, arr.length - 1).join(delimeter) +
+            lastDelimeter + arr[arr.length - 1];
+  }
+}
+
 function playerChoosesSquare(board) {
   let square;
 
   while (true) {
-    prompt(`Choose a square (${emptySquares(board).join(', ')}):`);
+    prompt(`Choose a square ${joinOr(emptySquares(board))}`);
     square = readline.question().trim();
     if (emptySquares(board).includes(square)) break;
 
@@ -69,12 +78,14 @@ function someoneWon(board) {
   return !!detectWinner(board);
 }
 
+/* eslint-disable max-lines-per-function */
 function detectWinner(board) {
   let winningLines = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9],
     [1, 4, 7], [2, 5, 8], [3, 6, 9],
     [1, 5, 9], [3, 5, 7]
   ];
+
 
   for (let line = 0; line < winningLines.length; line++) {
     let [sq1, sq2, sq3] = winningLines[line];
