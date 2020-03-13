@@ -3,7 +3,7 @@ const readline = require('readline-sync');
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = '0';
-const WINNING_SCORE = 5;
+const WINNING_SCORE = 3;
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -44,7 +44,7 @@ function joinOr(arr, delimeter = ', ', lastDelimeter = 'or') {
     case 1:
       return arr;
     case 2:
-      return arr.join(lastDelimeter);
+      return arr.join(" " + lastDelimeter + " ");
     default:
       return arr.slice(0, arr.length - 1).join(delimeter)
               + " " + lastDelimeter + " " + arr[arr.length - 1];
@@ -80,7 +80,7 @@ function boardFull(board) {
   return emptySquares(board).length === 0;
 }
 
-function someoneWon(board) {
+function someoneWonGame(board) {
   return !!detectGameWinner(board);
 }
 
@@ -131,27 +131,55 @@ function updateScore(score, gameWinner) {
   score[gameWinner] += 1;
 }
 
-let board = initializeBoard();
-let score = setupScore();
-
-while (true) {
-  displayBoard(board);
-
-  playerChoosesSquare(board);
-  if (someoneWon(board) || boardFull(board)) break;
-
-  computerChoosesSquare(board);
-  if (someoneWon(board) || boardFull(board)) break;
-
+function someoneWonMatch(score) {
+  return Object.values(score).some(
+                              pointsNumber => pointsNumber === WINNING_SCORE);
 }
 
-displayBoard(board);
+function displayGrandWinner(score) {
+  let players = Object.keys(score);
+  players.sort((a, b) => score[b] - score[a]);
 
-if (someoneWon(board)) {
+  console.log(`The grand winner is ${players[0]}.`);
+}
+
+function displayCurrentScore(score, board) {
   updateScore(score, detectGameWinner(board));
   displayScore(score);
   console.log('');
-  prompt(`${detectGameWinner(board)} won this game!`);
-} else {
-  prompt("It's a tie!");
+
+  prompt('Hit enter to move on to the next game:');
+  let input = readline.question();
+
+  while (input !== '') {
+    prompt("Just hit enter to move on to the next game!!!");
+    input = readline.question();
+  }
 }
+
+
+let score = setupScore();
+while (!someoneWonMatch(score)) {
+  let board = initializeBoard();
+
+  while (true) {
+    displayBoard(board);
+
+    playerChoosesSquare(board);
+    if (someoneWonGame(board) || boardFull(board)) break;
+
+    computerChoosesSquare(board);
+    if (someoneWonGame(board) || boardFull(board)) break;
+
+  }
+
+  displayBoard(board);
+
+  if (someoneWonGame(board)) {
+    prompt(`${detectGameWinner(board)} won this game!`);
+  } else {
+    prompt("It's a tie!");
+  }
+  displayCurrentScore(score, board);
+}
+displayGrandWinner(score);
