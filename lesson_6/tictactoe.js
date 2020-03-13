@@ -128,7 +128,10 @@ function displayScore(score) {
 }
 
 function updateScore(score, gameWinner) {
-  score[gameWinner] += 1;
+  let players = Object.keys(score);
+  if (players.includes(gameWinner)) {
+    score[gameWinner] += 1;
+  }
 }
 
 function someoneWonMatch(score) {
@@ -147,7 +150,9 @@ function displayCurrentScore(score, board) {
   updateScore(score, detectGameWinner(board));
   displayScore(score);
   console.log('');
+}
 
+function moveToNextGame() {
   prompt('Hit enter to move on to the next game:');
   let input = readline.question();
 
@@ -157,29 +162,52 @@ function displayCurrentScore(score, board) {
   }
 }
 
+function isNewMatch() {
+  prompt('Would you like to play a new match? (y/n)');
+  let answer = readline.question();
 
-let score = setupScore();
-while (!someoneWonMatch(score)) {
-  let board = initializeBoard();
+  while (!['y','n'].includes(answer.toLowerCase())) {
+    prompt('Error. Would you like to play a new match? (y/n)');
+    answer = readline.question();
+  }
+  return 'y' === answer.toLowerCase();
+}
 
-  while (true) {
+while (true) {
+  let score = setupScore();
+
+  while (!someoneWonMatch(score)) {
+    let board = initializeBoard();
+
+    while (true) {
+      displayBoard(board);
+
+      playerChoosesSquare(board);
+      if (someoneWonGame(board) || boardFull(board)) break;
+
+      computerChoosesSquare(board);
+      if (someoneWonGame(board) || boardFull(board)) break;
+
+    }
+
     displayBoard(board);
 
-    playerChoosesSquare(board);
-    if (someoneWonGame(board) || boardFull(board)) break;
+    if (someoneWonGame(board)) {
+      prompt(`${detectGameWinner(board)} won this game!`);
+    } else {
+      prompt("It's a tie!");
+    }
 
-    computerChoosesSquare(board);
-    if (someoneWonGame(board) || boardFull(board)) break;
+    displayCurrentScore(score, board);
 
+    if (!someoneWonMatch(score)) {
+      moveToNextGame(score);
+    }
   }
 
-  displayBoard(board);
-
-  if (someoneWonGame(board)) {
-    prompt(`${detectGameWinner(board)} won this game!`);
-  } else {
-    prompt("It's a tie!");
+  displayGrandWinner(score);
+  if (!isNewMatch()) {
+    prompt('Goodbye!');
+    break;
   }
-  displayCurrentScore(score, board);
 }
-displayGrandWinner(score);
