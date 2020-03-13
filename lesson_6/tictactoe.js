@@ -3,6 +3,7 @@ const readline = require('readline-sync');
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = '0';
+const WINNING_SCORE = 5;
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -36,17 +37,17 @@ function initializeBoard() {
   return board;
 }
 
-function joinOr(arr, delimeter = ', ', word = 'or') {
+function joinOr(arr, delimeter = ', ', lastDelimeter = 'or') {
   switch (arr.length) {
     case 0:
       return '';
     case 1:
       return arr;
     case 2:
-      return arr.join(` ${word} `);
+      return arr.join(lastDelimeter);
     default:
-      return arr.slice(0, arr.length - 1).join(delimeter) +
-              word + arr[arr.length - 1];
+      return arr.slice(0, arr.length - 1).join(delimeter)
+              + " " + lastDelimeter + " " + arr[arr.length - 1];
   }
 }
 
@@ -80,11 +81,11 @@ function boardFull(board) {
 }
 
 function someoneWon(board) {
-  return !!detectWinner(board);
+  return !!detectGameWinner(board);
 }
 
 /* eslint-disable max-lines-per-function */
-function detectWinner(board) {
+function detectGameWinner(board) {
   let winningLines = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9],
     [1, 4, 7], [2, 5, 8], [3, 6, 9],
@@ -113,7 +114,25 @@ function detectWinner(board) {
   return null;
 }
 
+function setupScore() {
+  let score = {};
+  score.Player = 0;
+  score.Computer = 0;
+  return score;
+}
+
+function displayScore(score) {
+  for (let player in score) {
+    console.log(`${player}'s score: ${score[player]} pts`);
+  }
+}
+
+function updateScore(score, gameWinner) {
+  score[gameWinner] += 1;
+}
+
 let board = initializeBoard();
+let score = setupScore();
 
 while (true) {
   displayBoard(board);
@@ -129,7 +148,10 @@ while (true) {
 displayBoard(board);
 
 if (someoneWon(board)) {
-  prompt(`${detectWinner(board)} won!`);
+  updateScore(score, detectGameWinner(board));
+  displayScore(score);
+  console.log('');
+  prompt(`${detectGameWinner(board)} won this game!`);
 } else {
   prompt("It's a tie!");
 }
