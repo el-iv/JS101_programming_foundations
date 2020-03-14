@@ -4,11 +4,13 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = '0';
 const WINNING_SCORE = 3;
-let WINNING_LINES = [
+const WINNING_LINES = [
   [1, 2, 3], [4, 5, 6], [7, 8, 9],
   [1, 4, 7], [2, 5, 8], [3, 6, 9],
   [1, 5, 9], [3, 5, 7]
 ];
+const CENTER_SQUARE = '5';
+
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -73,23 +75,30 @@ function playerChoosesSquare(board) {
 function computerChoosesSquare(board) {
   let square;
 
-  // defense first
+  //first: offense
   for (let index = 0; index < WINNING_LINES.length; index++) {
     let line = WINNING_LINES[index];
-    square = findAtRiskSquare(line, board);
+    square = findAtRiskSquare(line, board, COMPUTER_MARKER);
     if (square) break;
   }
 
-  // offense
+  // second: defense
   if (!square) {
     for (let index = 0; index < WINNING_LINES.length; index++) {
       let line = WINNING_LINES[index];
-      square = findAtRiskSquare(line, board, COMPUTER_MARKER);
+      square = findAtRiskSquare(line, board, HUMAN_MARKER);
       if (square) break;
     }
   }
 
-  // just pick a random square
+  // third: pick square 5
+  if (!square) {
+    if (emptySquares(board).includes(CENTER_SQUARE)) {
+      square = CENTER_SQUARE;
+    }
+  }
+
+  // fourth: pick a random square
   if (!square) {
     let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
     square = emptySquares(board)[randomIndex];
