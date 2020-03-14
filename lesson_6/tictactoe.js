@@ -33,6 +33,8 @@ function displayBoard(board) {
   console.log(`  ${board['7']}  |  ${board['8']}  |  ${board['9']}`);
   console.log('     |     |');
   console.log('');
+  console.log(HUMAN_PLAYER + "'s marker is " + HUMAN_MARKER + " and "
+                            + COMPUTER_PLAYER + "'s marker is O\n");
 }
 
 function initializeBoard() {
@@ -47,7 +49,7 @@ function initializeBoard() {
 
 function welcomeMessage() {
   prompt('Welcome to Tic Tac Toe!');
-  prompt('The first player who reaches 3 winning games is the grand winner!');
+  prompt('The first player who reaches 3 winning rounds is the grand winner!');
   console.log('');
 }
 
@@ -76,7 +78,7 @@ function joinOr(arr, delimeter = ', ', lastDelimeter = 'or') {
     case 0:
       return '';
     case 1:
-      return arr;
+      return `${arr}`;
     case 2:
       return arr.join(" " + lastDelimeter + " ");
     default:
@@ -161,11 +163,11 @@ function boardFull(board) {
   return emptySquares(board).length === 0;
 }
 
-function someoneWonGame(board) {
-  return !!detectGameWinner(board);
+function someoneWonRound(board) {
+  return !!detectRoundWinner(board);
 }
 
-function detectGameWinner(board) {
+function detectRoundWinner(board) {
   for (let line = 0; line < WINNING_LINES.length; line++) {
     let [sq1, sq2, sq3] = WINNING_LINES[line];
 
@@ -215,15 +217,15 @@ function displayScore(score) {
 }
 
 function updateScore(score, board) {
-  if (someoneWonGame(board)) {
-    let gameWinner = detectGameWinner(board);
-    score[gameWinner] += 1;
+  if (someoneWonRound(board)) {
+    let roundWinner = detectRoundWinner(board);
+    score[roundWinner] += 1;
   }
 }
 
-function displayGameResults(board) {
-  if (someoneWonGame(board)) {
-      prompt(`${detectGameWinner(board)} won this game!`);
+function displayRoundResults(board) {
+  if (someoneWonRound(board)) {
+      prompt(`${detectRoundWinner(board)} won this round!`);
     } else {
       prompt("It's a tie!");
     }
@@ -240,15 +242,16 @@ function displayGrandWinner(score) {
   let players = Object.keys(score);
   players.sort((a, b) => score[b] - score[a]);
 
-  console.log(`The grand winner is ${players[0]}!!!`);
+  prompt(`The grand winner is ${players[0]}!!!`);
+  console.log('');
 }
 
-function moveToNextGame() {
-  prompt('Hit enter to move on to the next game:');
+function moveToNextRound() {
+  prompt('Hit enter to move on to the next round:');
   let input = readline.question();
 
   while (input !== '') {
-    prompt("Just hit enter to move on to the next game!!!");
+    prompt("Just hit enter to move on to the next round!!!");
     input = readline.question();
   }
 }
@@ -267,48 +270,52 @@ function isNewMatch() {
 function chooseSquare(board, player) {
   if (player === HUMAN_PLAYER) {
     playerChoosesSquare(board);
-  } else if (player === COMPUTER_PLAYER) {
+  } else {
     computerChoosesSquare(board);
   }
 }
 
 function alternatePlayer(currentPlayer) {
-  return currentPlayer === HUMAN_PLAYER ?
-         COMPUTER_PLAYER :
-         HUMAN_PLAYER;
+  return currentPlayer === HUMAN_PLAYER ? COMPUTER_PLAYER : HUMAN_PLAYER;
 }
 
-while (true) {
+function startRound(currentPlayer, score) {
+  let board = initializeBoard();
+  while (true) {
+    displayBoard(board);
+    displayScore(score);
+    chooseSquare(board, currentPlayer);
+    currentPlayer = alternatePlayer(currentPlayer);
+    if (someoneWonRound(board) || boardFull(board)) break;
+  }
+
+  displayBoard(board);
+
+  updateScore(score, board);
+  displayScore(score);
+  displayRoundResults(board);
+}
+
+function startMatch() {
+  console.clear();
   welcomeMessage();
   let score = setupScore();
   let firstMovePlayer = pickPlayerFirstMove();
 
   while (!someoneWonMatch(score)) {
-    let board = initializeBoard();
-    let currentPlayer = firstMovePlayer;
-
-    while (true) {
-      displayBoard(board);
-      displayScore(score);
-      chooseSquare(board, currentPlayer);
-      currentPlayer = alternatePlayer(currentPlayer);
-      if (someoneWonGame(board) || boardFull(board)) break;
-    }
-
-    displayBoard(board);
-    updateScore(score, board);
-    displayScore(score);
-    displayGameResults(board);
-
+    startRound(firstMovePlayer, score);
     if (!someoneWonMatch(score)) {
-      moveToNextGame(score);
+      moveToNextRound(score);
     }
   }
 
-  displayGrandWinner(score);
+    displayGrandWinner(score);
+}
+
+while (true) {
+  startMatch();
   if (!isNewMatch()) {
     prompt('Goodbye!');
     break;
   }
-  console.clear();
 }
