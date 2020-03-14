@@ -2,7 +2,7 @@ const readline = require('readline-sync');
 
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
-const COMPUTER_MARKER = '0';
+const COMPUTER_MARKER = 'O';
 const WINNING_SCORE = 3;
 const WINNING_LINES = [
   [1, 2, 3], [4, 5, 6], [7, 8, 9],
@@ -34,7 +34,7 @@ function displayBoard(board) {
   console.log('     |     |');
   console.log('');
   console.log(HUMAN_PLAYER + "'s marker is " + HUMAN_MARKER + " and "
-                            + COMPUTER_PLAYER + "'s marker is O\n");
+              + COMPUTER_PLAYER + "'s marker is " + COMPUTER_MARKER + "\n");
 }
 
 function initializeBoard() {
