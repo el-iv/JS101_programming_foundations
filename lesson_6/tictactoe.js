@@ -275,6 +275,22 @@ function alternatePlayer(currentPlayer) {
   return currentPlayer === HUMAN_PLAYER ? COMPUTER_PLAYER : HUMAN_PLAYER;
 }
 
+function startMatch() {
+  console.clear();
+  welcomeMessage();
+  let score = setupScore();
+  let firstMovePlayer = pickPlayerFirstMove();
+
+  while (!someoneWonMatch(score)) {
+    startRound(firstMovePlayer, score);
+    if (!someoneWonMatch(score)) {
+      moveToNextRound(score);
+    }
+  }
+
+  displayGrandWinner(score);
+}
+
 function startRound(currentPlayer, score) {
   let board = initializeBoard();
   while (true) {
@@ -290,22 +306,6 @@ function startRound(currentPlayer, score) {
   updateScore(score, board);
   displayScore(score);
   displayRoundResults(board);
-}
-
-function startMatch() {
-  console.clear();
-  welcomeMessage();
-  let score = setupScore();
-  let firstMovePlayer = pickPlayerFirstMove();
-
-  while (!someoneWonMatch(score)) {
-    startRound(firstMovePlayer, score);
-    if (!someoneWonMatch(score)) {
-      moveToNextRound(score);
-    }
-  }
-
-    displayGrandWinner(score);
 }
 
 while (true) {
