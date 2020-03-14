@@ -136,19 +136,15 @@ function outputRandomSquare(board) {
 }
 
 function computerChoosesSquare(board) {
-
   let square = outputOffensiveSquare(board);
 
   if (!square) {
     square = outputDefensiveSquare(board);
   }
-
   if (!square) {
     square = outputCenterSquare(board);
   }
-
   if (!square) {
-
     square = outputRandomSquare(board);
   }
 
