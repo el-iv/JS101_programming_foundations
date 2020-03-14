@@ -10,7 +10,8 @@ const WINNING_LINES = [
   [1, 5, 9], [3, 5, 7]
 ];
 const CENTER_SQUARE = '5';
-
+const COMPUTER_PLAYER = 'Computer';
+const HUMAN_PLAYER = 'Player'; // you
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -44,6 +45,32 @@ function initializeBoard() {
   return board;
 }
 
+function welcomeMessage() {
+  prompt('Welcome to Tic Tac Toe!');
+  prompt('The first player who reaches 3 winning games is the grand winner!');
+  console.log('');
+}
+
+function pickPlayerFirstMove() {
+  prompt('Who moves first? (P)layer or (C)omputer?');
+  let answer = readline.question().toLowerCase();
+
+  //while (answer !== 'p' && answer !== 'c') {
+  while (!['p', 'c'].includes(answer)) {
+    prompt('Error! Who moves first? (P)layer or (C)omputer?');
+    answer = readline.question().toLowerCase();
+  }
+
+  let firstPlayer;
+  if (answer === 'p') {
+     firstPlayer = HUMAN_PLAYER;
+  } else if (answer === 'c') {
+      firstPlayer = COMPUTER_PLAYER;
+  }
+
+  return firstPlayer;
+}
+
 function joinOr(arr, delimeter = ', ', lastDelimeter = 'or') {
   switch (arr.length) {
     case 0:
@@ -72,36 +99,55 @@ function playerChoosesSquare(board) {
   board[square] = HUMAN_MARKER;
 }
 
-function computerChoosesSquare(board) {
+function outputOffensiveSquare(board) {
   let square;
-
-  //first: offense
   for (let index = 0; index < WINNING_LINES.length; index++) {
     let line = WINNING_LINES[index];
     square = findAtRiskSquare(line, board, COMPUTER_MARKER);
     if (square) break;
   }
 
-  // second: defense
+  return square;
+}
+
+function outputDefensiveSquare(board) {
+  let square;
+  for (let index = 0; index < WINNING_LINES.length; index++) {
+    let line = WINNING_LINES[index];
+    square = findAtRiskSquare(line, board, HUMAN_MARKER);
+    if (square) break;
+  }
+  return square;
+}
+
+function outputCenterSquare(board) {
+  let square;
+  if (emptySquares(board).includes(CENTER_SQUARE)) {
+    square = CENTER_SQUARE;
+  }
+  return square;
+}
+
+function outputRandomSquare(board) {
+  let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
+  return emptySquares(board)[randomIndex];
+}
+
+function computerChoosesSquare(board) {
+
+  let square = outputOffensiveSquare(board);
+
   if (!square) {
-    for (let index = 0; index < WINNING_LINES.length; index++) {
-      let line = WINNING_LINES[index];
-      square = findAtRiskSquare(line, board, HUMAN_MARKER);
-      if (square) break;
-    }
+    square = outputDefensiveSquare(board);
   }
 
-  // third: pick square 5
   if (!square) {
-    if (emptySquares(board).includes(CENTER_SQUARE)) {
-      square = CENTER_SQUARE;
-    }
+    square = outputCenterSquare(board);
   }
 
-  // fourth: pick a random square
   if (!square) {
-    let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
-    square = emptySquares(board)[randomIndex];
+
+    square = outputRandomSquare(board);
   }
 
   board[square] = COMPUTER_MARKER;
@@ -119,9 +165,7 @@ function someoneWonGame(board) {
   return !!detectGameWinner(board);
 }
 
-/* eslint-disable max-lines-per-function */
 function detectGameWinner(board) {
-
   for (let line = 0; line < WINNING_LINES.length; line++) {
     let [sq1, sq2, sq3] = WINNING_LINES[line];
 
@@ -167,14 +211,25 @@ function displayScore(score) {
   for (let player in score) {
     console.log(`${player}'s score: ${score[player]} pts`);
   }
+  console.log('');
 }
 
-function updateScore(score, gameWinner) {
-  let players = Object.keys(score);
-  if (players.includes(gameWinner)) {
+function updateScore(score, board) {
+  if (someoneWonGame(board)) {
+    let gameWinner = detectGameWinner(board);
     score[gameWinner] += 1;
   }
 }
+
+function displayGameResults(board) {
+  if (someoneWonGame(board)) {
+      prompt(`${detectGameWinner(board)} won this game!`);
+    } else {
+      prompt("It's a tie!");
+    }
+  console.log('');
+}
+
 
 function someoneWonMatch(score) {
   return Object.values(score).some(
@@ -185,13 +240,7 @@ function displayGrandWinner(score) {
   let players = Object.keys(score);
   players.sort((a, b) => score[b] - score[a]);
 
-  console.log(`The grand winner is ${players[0]}.`);
-}
-
-function displayCurrentScore(score, board) {
-  updateScore(score, detectGameWinner(board));
-  displayScore(score);
-  console.log('');
+  console.log(`The grand winner is ${players[0]}!!!`);
 }
 
 function moveToNextGame() {
@@ -206,41 +255,50 @@ function moveToNextGame() {
 
 function isNewMatch() {
   prompt('Would you like to play a new match? (y/n)');
-  let answer = readline.question();
+  let answer = readline.question().toLowerCase();
 
-  while (!['y','n'].includes(answer.toLowerCase())) {
+  while (!['y','n'].includes(answer)) {
     prompt('Error. Would you like to play a new match? (y/n)');
-    answer = readline.question();
+    answer = readline.question().toLowerCase();
   }
-  return 'y' === answer.toLowerCase();
+  return answer === 'y';
+}
+
+function chooseSquare(board, player) {
+  if (player === HUMAN_PLAYER) {
+    playerChoosesSquare(board);
+  } else if (player === COMPUTER_PLAYER) {
+    computerChoosesSquare(board);
+  }
+}
+
+function alternatePlayer(currentPlayer) {
+  return currentPlayer === HUMAN_PLAYER ?
+         COMPUTER_PLAYER :
+         HUMAN_PLAYER;
 }
 
 while (true) {
+  welcomeMessage();
   let score = setupScore();
+  let firstMovePlayer = pickPlayerFirstMove();
 
   while (!someoneWonMatch(score)) {
     let board = initializeBoard();
+    let currentPlayer = firstMovePlayer;
 
     while (true) {
       displayBoard(board);
-
-      playerChoosesSquare(board);
+      displayScore(score);
+      chooseSquare(board, currentPlayer);
+      currentPlayer = alternatePlayer(currentPlayer);
       if (someoneWonGame(board) || boardFull(board)) break;
-
-      computerChoosesSquare(board);
-      if (someoneWonGame(board) || boardFull(board)) break;
-
     }
 
     displayBoard(board);
-
-    if (someoneWonGame(board)) {
-      prompt(`${detectGameWinner(board)} won this game!`);
-    } else {
-      prompt("It's a tie!");
-    }
-
-    displayCurrentScore(score, board);
+    updateScore(score, board);
+    displayScore(score);
+    displayGameResults(board);
 
     if (!someoneWonMatch(score)) {
       moveToNextGame(score);
@@ -252,4 +310,5 @@ while (true) {
     prompt('Goodbye!');
     break;
   }
+  console.clear();
 }
