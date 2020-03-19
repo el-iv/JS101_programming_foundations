@@ -212,16 +212,15 @@ function displayScore(score) {
   console.log('');
 }
 
-function updateScore(score, board) {
-  if (someoneWonRound(board)) {
-    let roundWinner = detectRoundWinner(board);
+function updateScore(score, roundWinner) {
+  if (roundWinner !== null) {
     score[roundWinner] += 1;
   }
 }
 
-function displayRoundResults(board) {
-  if (someoneWonRound(board)) {
-      prompt(`${detectRoundWinner(board)} won this round!`);
+function displayRoundResults(roundWinner) {
+  if (roundWinner !== null) {
+      prompt(`${roundWinner} won this round!`);
     } else {
       prompt("It's a tie!");
     }
@@ -302,10 +301,10 @@ function startRound(currentPlayer, score) {
   }
 
   displayBoard(board);
-
-  updateScore(score, board);
+  let roundWinner = detectRoundWinner(board);
+  updateScore(score, roundWinner);
   displayScore(score);
-  displayRoundResults(board);
+  displayRoundResults(roundWinner);
 }
 
 while (true) {
