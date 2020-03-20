@@ -159,10 +159,6 @@ function boardFull(board) {
   return emptySquares(board).length === 0;
 }
 
-function someoneWonRound(board) {
-  return !!detectRoundWinner(board);
-}
-
 function detectRoundWinner(board) {
   for (let line = 0; line < WINNING_LINES.length; line++) {
     let [sq1, sq2, sq3] = WINNING_LINES[line];
@@ -295,16 +291,20 @@ function startRound(currentPlayer, score) {
   while (true) {
     displayBoard(board);
     displayScore(score);
+
     chooseSquare(board, currentPlayer);
     currentPlayer = alternatePlayer(currentPlayer);
-    if (someoneWonRound(board) || boardFull(board)) break;
-  }
 
-  displayBoard(board);
-  let roundWinner = detectRoundWinner(board);
-  updateScore(score, roundWinner);
-  displayScore(score);
-  displayRoundResults(roundWinner);
+    let roundWinner = detectRoundWinner(board);
+
+    if (roundWinner !== null || boardFull(board)) {
+      displayBoard(board);
+      updateScore(score, roundWinner);
+      displayScore(score);
+      displayRoundResults(roundWinner);
+      break;
+    }
+  }
 }
 
 while (true) {
